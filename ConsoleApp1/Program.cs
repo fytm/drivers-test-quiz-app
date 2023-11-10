@@ -7,8 +7,8 @@ internal class Program
     private static void Main(string[] args)
     {
         Console.WriteLine("This application helps you prepare for the drivers test by asking you a few practice questions!");
-        Console.WriteLine("Reading questions into app");
-        List<QuestionData> AllQuestions = new CSVQuestionLoader(csvFilePath).LoadQuestions();
+        QuestionLoader questionLoader = new CSVQuestionLoader(csvFilePath);
+        List<QuestionData> AllQuestions = questionLoader.();
         QuestionApp.AskQuestions(AllQuestions);
     }
 

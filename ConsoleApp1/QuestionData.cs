@@ -2,9 +2,9 @@
 {
     public class QuestionData
     {
-        public String Question { get; set; }
-        public HashSet<string> Options { get; set; }
-        private string Answer { get; set; }
+        public String Question;
+        public HashSet<string> Options;
+        private string Answer;
 
 
         public QuestionData(string Question, string Options, string Answer)

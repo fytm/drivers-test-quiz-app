@@ -25,6 +25,7 @@ namespace MyApp
         {
             List<QuestionData> AllQuestions = new List<QuestionData>();
             // Read the CSV file.
+            Console.WriteLine("Reading questions into app");
             using (var reader = new StreamReader(csvFilePath))
             using (var csv = new CsvReader(reader, csvConfig))
             {
