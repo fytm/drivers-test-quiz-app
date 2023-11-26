@@ -9,6 +9,7 @@ namespace MyApp
     {
         private CsvConfiguration csvConfig;
         private string csvFilePath;
+        private List<QuestionData> AllQuestions;
 
         public CSVQuestionLoader(string csvFilePath)
         {
@@ -19,11 +20,11 @@ namespace MyApp
                 Delimiter = ",",
             };
             this.csvFilePath = csvFilePath;
+            this.AllQuestions = new List<QuestionData>();
         }
 
         public List<QuestionData> LoadQuestions()
         {
-            List<QuestionData> AllQuestions = new List<QuestionData>();
             // Read the CSV file.
             Console.WriteLine("Reading questions into app");
             using (var reader = new StreamReader(csvFilePath))

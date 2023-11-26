@@ -35,6 +35,15 @@
                 numQuestions -= 1;
             }
         }
+
+        public static Boolean isCorrectAnswer(QuestionData questionData, string answer)
+        {
+            if (questionData.getAnswer() == answer)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 
 }
