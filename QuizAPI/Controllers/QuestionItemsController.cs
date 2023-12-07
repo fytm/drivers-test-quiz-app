@@ -5,32 +5,32 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using QuizAPI.Models;
+using QuizAPI.Data;
 
 namespace QuizAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
-    public class QuestionItemsController : ControllerBase
+    public class QuestionsController : ControllerBase
     {
-        private readonly QuestionContext _context;
+        private readonly DataContext _context;
 
-        public QuestionItemsController(QuestionContext context)
+        public QuestionsController(DataContext context)
         {
             _context = context;
         }
 
-        // GET: api/QuestionItems
+        // GET: api/Questions
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<QuestionItem>>> GetQuestions(
+        public async Task<ActionResult<IEnumerable<Question>>> GetQuestions(
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 10)
         {
-          if (_context.QuestionItems == null)
+          if (_context.Questions == null)
           {
               return NotFound();
           }
-            var totalQuestions = await _context.QuestionItems.CountAsync();
+            var totalQuestions = await _context.Questions.CountAsync();
             var totalPages = (int)Math.Ceiling((double)totalQuestions / pageSize);
 
             if (page < 1 || page > totalPages)
@@ -38,8 +38,7 @@ namespace QuizAPI.Controllers
                 return BadRequest("Invalid page number");
             }
 
-            var questions = await _context.QuestionItems
-                .OrderBy(q => q.Id) // Order by a suitable property
+            var questions = await _context.Questions
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
@@ -55,15 +54,15 @@ namespace QuizAPI.Controllers
 
         }
 
-        // GET: api/QuestionItems/5
+        // GET: api/Questions/14F78495-467D-46E0-84E9-E5F83D5271D3
         [HttpGet("/{id}")]
-        public async Task<ActionResult<QuestionItem>> GetQuestionItem(int id)
+        public async Task<ActionResult<Question>> GetQuestionItem(Guid id)
         {
-            if (_context.QuestionItems == null)
+            if (_context.Questions == null)
             {
                 return NotFound();
             }
-            var questionItem = await _context.QuestionItems.FindAsync(id);
+            var questionItem = await _context.Questions.FindAsync(id);
 
             if (questionItem == null)
             {
@@ -73,10 +72,10 @@ namespace QuizAPI.Controllers
             return questionItem;
         }
 
-        // PUT: api/QuestionItems/5
+        // PUT: api/Questions/14F78495-467D-46E0-84E9-E5F83D5271D3
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutQuestionItem(int id, QuestionItem questionItem)
+        public async Task<IActionResult> PutQuestionItem(Guid id, Question questionItem)
         {
             if (id != questionItem.Id)
             {
@@ -104,44 +103,44 @@ namespace QuizAPI.Controllers
             return NoContent();
         }
 
-        // POST: api/QuestionItems
+        // POST: api/Questions
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<QuestionItem>> PostQuestionItem([FromBody] QuestionItem questionItem)
+        public async Task<ActionResult<Question>> PostQuestionItem([FromBody] Question questionItem)
         {
-          if (_context.QuestionItems == null)
+          if (_context.Questions == null)
           {
-              return Problem("Entity set 'QuestionContext.QuestionItems'  is null.");
+              return Problem("Entity set 'QuestionContext.Questions'  is null.");
           }
-            _context.QuestionItems.Add(questionItem);
+            _context.Questions.Add(questionItem);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetQuestionItem), new { id = questionItem.Id }, questionItem);
         }
 
-        // DELETE: api/QuestionItems/5
+        // DELETE: api/Questions/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteQuestionItem(int id)
         {
-            if (_context.QuestionItems == null)
+            if (_context.Questions == null)
             {
                 return NotFound();
             }
-            var questionItem = await _context.QuestionItems.FindAsync(id);
+            var questionItem = await _context.Questions.FindAsync(id);
             if (questionItem == null)
             {
                 return NotFound();
             }   
 
-            _context.QuestionItems.Remove(questionItem);
+            _context.Questions.Remove(questionItem);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool QuestionItemExists(int id)
+        private bool QuestionItemExists(Guid id)
         {
-            return (_context.QuestionItems?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Questions?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
