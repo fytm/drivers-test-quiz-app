@@ -23,6 +23,7 @@ namespace QuizAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Question>> GetQuestion(Guid id)
         {
+            Console.WriteLine("**************************Getting question*************************");
             var question = await _questionService.GetQuestion(id);
             return (question != null) ? Ok(question) : NotFound();
         }

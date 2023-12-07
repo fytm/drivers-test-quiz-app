@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using QuizAPI.Data;
+﻿using QuizAPI.Models;
 
 namespace QuizAPI.Services
 {
@@ -20,6 +19,7 @@ namespace QuizAPI.Services
 
         public async Task<Question> GetQuestion(Guid id)
         {
+
             return await _dataContext.Questions.FindAsync(id);
         }
         public async Task<Question> AddQuestion(Question question)

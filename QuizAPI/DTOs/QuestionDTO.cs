@@ -1,8 +1,10 @@
-﻿namespace QuizAPI.DTOs
+﻿using QuizAPI.Models;
+
+namespace QuizAPI.DTOs
 {
     public class QuestionDTO
     {
         public string Question { get; set; }
-        public HashSet<Option> AnswerOptions { get; set; }
+        public HashSet<Option> AnswerOptions { get; set; } = new HashSet<Option>();
     }
 }
