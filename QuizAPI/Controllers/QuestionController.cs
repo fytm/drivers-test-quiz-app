@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using QuizAPI.DTOs;
 using QuizAPI.Models;
 using QuizAPI.Services;
 
@@ -23,13 +24,12 @@ namespace QuizAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Question>> GetQuestion(Guid id)
         {
-            Console.WriteLine("**************************Getting question*************************");
             var question = await _questionService.GetQuestion(id);
             return (question != null) ? Ok(question) : NotFound();
         }
 
         [HttpPost]
-        public async Task<ActionResult<Question>> AddQuestion(Question request)
+        public async Task<ActionResult<Question>> AddQuestion(QuestionCreateDTO request)
         {
             var question = await _questionService.AddQuestion(request);
             return (question != null) ? Ok(question) : BadRequest();

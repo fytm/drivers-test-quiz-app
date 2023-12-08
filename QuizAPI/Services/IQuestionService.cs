@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using QuizAPI.DTOs;
 using QuizAPI.Models;
 
 namespace QuizAPI.Services
@@ -7,6 +8,6 @@ namespace QuizAPI.Services
     {
         Task<List<Question>> GetAllQuestions();
         Task<Question> GetQuestion(Guid id);
-        Task<Question> AddQuestion(Question question);
+        Task<Question> AddQuestion(QuestionCreateDTO questionCreateDTO);
     }
 }
