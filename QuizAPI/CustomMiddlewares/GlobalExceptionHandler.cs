@@ -35,7 +35,7 @@ namespace QuizAPI.CustomMiddlewares
             {
                 case ResourceNotFoundException ex:
                     response.StatusCode = ex.StatusCode;
-                    await response.WriteAsJsonAsync(ex.Message);
+                    await response.WriteAsJsonAsync(ex.Value);
                     break;
                 default:
                     response.StatusCode = (int)HttpStatusCode.InternalServerError;
