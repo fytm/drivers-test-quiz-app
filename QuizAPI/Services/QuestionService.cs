@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using QuizAPI.DTOs;
+using QuizAPI.Exceptions;
 using QuizAPI.Models;
 
 namespace QuizAPI.Services
@@ -20,7 +21,7 @@ namespace QuizAPI.Services
             var question = await _dataContext.Questions.FindAsync(id);
             if (question == null)
             {
-                throw new Exception($"Question {id} is not found");
+                throw new ResourceNotFoundException(id.ToString());
             }
             return question;
         }

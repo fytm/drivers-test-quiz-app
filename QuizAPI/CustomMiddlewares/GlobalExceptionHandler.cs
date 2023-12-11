@@ -6,37 +6,46 @@ namespace QuizAPI.CustomMiddlewares
 {
     public class GlobalExceptionHandler
     {
+        private readonly RequestDelegate _next;
         private readonly ILogger<GlobalExceptionHandler> _logger;
 
-        public GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger)
+        public GlobalExceptionHandler(RequestDelegate next ,ILogger<GlobalExceptionHandler> logger)
         {
+            _next = next;
             _logger = logger;   
         }
-        public ValueTask<bool> TryHandleAsync(
-            HttpContext httpContext,
-            Exception exception,
-            CancellationToken cancellationToken)
+        public async Task Invoke(HttpContext context)
         {
-            httpContext.Response.ContentType = "application/json";
-            var response = httpContext.Response;
+            try
+            {
+                await _next(context);
+            }
+            catch (Exception ex)
+            {
+                // Handle the exception and generate a response
+                await HandleExceptionAsync(context, ex);
+            }
+        }
+        private async Task HandleExceptionAsync(HttpContext context, Exception exception)
+        {
+
+            context.Response.ContentType = "application/json";
+            var response = context.Response;
             switch (exception)
             {
                 case ResourceNotFoundException ex:
-                    response.StatusCode = (int)HttpStatusCode.Forbidden;
-                    response.WriteAsync(ex.Message);
+                    response.StatusCode = ex.StatusCode;
+                    await response.WriteAsJsonAsync(ex.Message);
                     break;
                 default:
                     response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                    response.WriteAsync("Internal server error!");
+                    await response.WriteAsJsonAsync("Internal server error!");
                     break;
             }
             var exceptionMessage = exception.Message;
             _logger.LogError(
                 "Error Message: {exceptionMessage}, Time of occurrence {time}",
-                exceptionMessage, DateTime.UtcNow);
-            // Return false to continue with the default behavior
-            // - or - return true to signal that this exception is handled
-            return ValueTask.FromResult(false);
+                exception.Message, DateTime.UtcNow);
         }
     }
 }

@@ -1,8 +1,13 @@
-﻿namespace QuizAPI.Exceptions
+﻿using System.Net;
+
+namespace QuizAPI.Exceptions
 {
-    public class ResourceNotFoundException : ApplicationException
+    public class ResourceNotFoundException : HttpResponseException
     {
-        public ResourceNotFoundException(string resourceId) : base($"Resource with id {resourceId} not found"){
+        public ResourceNotFoundException(string resourceId) : base(
+            (int)HttpStatusCode.NotFound,
+            $"Resource with id {resourceId} not found")
+        {
         }
     }
 }
