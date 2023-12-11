@@ -1,5 +1,7 @@
 global using Microsoft.EntityFrameworkCore;
 global using QuizAPI.Data;
+using Microsoft.Extensions.DependencyInjection;
+using QuizAPI.CustomMiddlewares;
 using QuizAPI.Services;
 
 
@@ -14,6 +16,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IQuestionService, QuestionService>();
 builder.Services.AddDbContext<DataContext>(opt => opt.UseSqlite("Data Source=questionDb.db"));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -28,5 +31,6 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+app.UseMiddleware<GlobalExceptionHandler>();
 
 app.Run();
