@@ -1,11 +1,16 @@
 global using Microsoft.EntityFrameworkCore;
 global using QuizAPI.Data;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using QuizAPI.CustomMiddlewares;
 using QuizAPI.Services;
+//using WebApplication16.Data;
 
 
 var builder = WebApplication.CreateBuilder(args);
+var services = builder.Services;
+var configuration = builder.Configuration;
+
 
 // Add services to the container.
 
@@ -16,6 +21,15 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IQuestionService, QuestionService>();
 builder.Services.AddDbContext<DataContext>(opt => opt.UseSqlite("Data Source=questionDb.db"));
+//builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+//                                 options.SignIn.RequireConfirmedAccount = true)
+//    .AddEntityFrameworkStores<ApplicationDbContext>();
+
+services.AddAuthentication().AddGoogle(googleOptions =>
+    {
+        googleOptions.ClientId = configuration["Authentication:Google:ClientId"];
+        googleOptions.ClientSecret = configuration["Authentication:Google:ClientSecret"];
+    });
 
 var app = builder.Build();
 
@@ -28,6 +42,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseRouting();
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
