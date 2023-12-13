@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using QuizAPI.CustomMiddlewares;
 using QuizAPI.Services;
+using System.Net.Http.Headers;
+using System.Text.Json;
 //using WebApplication16.Data;
 
 
@@ -24,12 +26,26 @@ builder.Services.AddDbContext<DataContext>(opt => opt.UseSqlite("Data Source=que
 //builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 //                                 options.SignIn.RequireConfirmedAccount = true)
 //    .AddEntityFrameworkStores<ApplicationDbContext>();
-
-services.AddAuthentication().AddGoogle(googleOptions =>
+builder.Services.AddAuthentication("cookie").AddGoogle(
+    options =>
     {
-        googleOptions.ClientId = configuration["Authentication:Google:ClientId"];
-        googleOptions.ClientSecret = configuration["Authentication:Google:ClientSecret"];
-    });
+        options.SignInScheme = "cookie";
+        options.ClientId = configuration["Authentication:Google:ClientId"];
+        options.ClientSecret = configuration["Authentication:Google:ClientSecret"];
+        options.SaveTokens = true;
+        options.Events.OnCreatingTicket = async ctx =>
+        {
+            using var request = new HttpRequestMessage(HttpMethod.Get, ctx.Options.UserInformationEndpoint);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", ctx.AccessToken);
+            using var result = await ctx.Backchannel.SendAsync(request);
+            var user = await request.Content.ReadFromJsonAsync<JsonElement>();
+            ctx.RunClaimActions(user);
+        };
+    }
+    );
+
+
+
 
 var app = builder.Build();
 
