@@ -7,10 +7,10 @@ namespace QuizAPI.Data
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
         }
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //protected override void onconfiguring(dbcontextoptionsbuilder optionsbuilder)
         //{
-        //    optionsBuilder.UseSqlite("Data");
-        //    base.OnConfiguring(optionsBuilder);
+        //    optionsbuilder.usesqlite("data");
+        //    base.onconfiguring(optionsbuilder);
         //}
         public DbSet<Question> Questions { get; set; }
         public DbSet<Option> Options { get; set; }
